@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": {
-						"value": "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=@{pipeline().parameters.VideoId}&key=AIzaSyAfU7nGfid93Hlfe2Qe7qSUQlZOdM-dQY0",
+						"value": "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=@{pipeline().parameters.VideoId}&key=@{pipeline().parameters.APIKey}",
 						"type": "Expression"
 					},
 					"method": "GET"
@@ -68,6 +68,9 @@
 		],
 		"parameters": {
 			"VideoId": {
+				"type": "string"
+			},
+			"APIKey": {
 				"type": "string"
 			}
 		},
