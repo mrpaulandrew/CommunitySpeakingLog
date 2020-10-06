@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "GetSet Video Views",
 	"properties": {
 		"activities": [
 			{
@@ -68,8 +68,7 @@
 		],
 		"parameters": {
 			"VideoId": {
-				"type": "string",
-				"defaultValue": "M5pSoMf5w7o"
+				"type": "string"
 			}
 		},
 		"annotations": []
