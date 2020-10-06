@@ -75,7 +75,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"url": {
-								"value": "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=@{pipeline().parameters.VideoId}&key=AIzaSyAfU7nGfid93Hlfe2Qe7qSUQlZOdM-dQY0",
+								"value": "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=@{pipeline().parameters.VideoId}&key=@{pipeline().parameters.APIKey}",
 								"type": "Expression"
 							},
 							"method": "GET",
@@ -128,6 +128,9 @@
 				],
 				"parameters": {
 					"VideoId": {
+						"type": "string"
+					},
+					"APIKey": {
 						"type": "string"
 					}
 				},
@@ -203,6 +206,12 @@
 								"dependencyConditions": [
 									"Succeeded"
 								]
+							},
+							{
+								"activity": "Get API Key from Key Vault",
+								"dependencyConditions": [
+									"Succeeded"
+								]
 							}
 						],
 						"userProperties": [],
@@ -227,6 +236,10 @@
 										"parameters": {
 											"VideoId": {
 												"value": "@item().VideoId",
+												"type": "Expression"
+											},
+											"APIKey": {
+												"value": "@activity('Get API Key from Key Vault').output.value",
 												"type": "Expression"
 											}
 										}
@@ -253,6 +266,28 @@
 						"linkedServiceName": {
 							"referenceName": "SpeakingLogs",
 							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Get API Key from Key Vault",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://infokeystore.vault.azure.net/secrets/YouTubeAPIKey?api-version=7.0",
+							"method": "GET",
+							"headers": {},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
 						}
 					}
 				],

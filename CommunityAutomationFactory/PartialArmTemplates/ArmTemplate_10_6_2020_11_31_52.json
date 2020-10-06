@@ -6,14 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "CommunityAutomationFactory"
-		},
-		"KeyStore_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://InfoKeyStore.vault.azure.net/"
-		},
-		"SpeakingLogs_properties_typeProperties_connectionString_secretName": {
-			"type": "string",
-			"defaultValue": "SpeakingLogsDB"
 		}
 	},
 	"variables": {
@@ -43,8 +35,7 @@
 								"value": "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=@{pipeline().parameters.VideoId}&key=@{pipeline().parameters.APIKey}",
 								"type": "Expression"
 							},
-							"method": "GET",
-							"headers": {}
+							"method": "GET"
 						}
 					},
 					{
@@ -101,9 +92,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SpeakingLogs')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Update Video Log')]",
@@ -132,8 +121,7 @@
 							},
 							"dataset": {
 								"referenceName": "GetSetDatabaseValues",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							},
 							"firstRowOnly": false
 						}
@@ -230,7 +218,6 @@
 						"typeProperties": {
 							"url": "https://infokeystore.vault.azure.net/secrets/YouTubeAPIKey?api-version=7.0",
 							"method": "GET",
-							"headers": {},
 							"authentication": {
 								"type": "MSI",
 								"resource": "https://vault.azure.net"
@@ -241,100 +228,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/GetSetDatabaseValues')]",
-				"[concat(variables('factoryId'), '/linkedServices/SpeakingLogs')]",
 				"[concat(variables('factoryId'), '/pipelines/GetSet Video Views')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GetSetDatabaseValues')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SpeakingLogs",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SpeakingLogs')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/KeyStore')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('KeyStore_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SpeakingLogs')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "KeyStore",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "[parameters('SpeakingLogs_properties_typeProperties_connectionString_secretName')]"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/KeyStore')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Daily7am')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Update Video Log",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2020-10-06T09:22:00.000Z",
-						"timeZone": "UTC",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								7
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Update Video Log')]"
 			]
 		}
 	]
