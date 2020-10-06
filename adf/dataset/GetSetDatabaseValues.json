@@ -1,0 +1,12 @@
+{
+	"name": "GetSetDatabaseValues",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SpeakingLogs",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
