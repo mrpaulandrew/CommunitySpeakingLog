@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
+				"name": "Get Video Stats",
 				"type": "WebActivity",
 				"dependsOn": [],
 				"policy": {
@@ -23,11 +23,11 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "Insert Log Record",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Web1",
+						"activity": "Get Video Stats",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -40,12 +40,36 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[SetViewsLogEntry]",
+					"storedProcedureParameters": {
+						"VideoId": {
+							"value": {
+								"value": "@pipeline().parameters.VideoId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"Views": {
+							"value": {
+								"value": "@activity('Get Video Stats').output.items[0].statistics.viewCount",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "SpeakingLogs",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
 			"VideoId": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "M5pSoMf5w7o"
 			}
 		},
 		"annotations": []
