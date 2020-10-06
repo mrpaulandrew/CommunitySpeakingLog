@@ -59,7 +59,7 @@
 								"waitOnCompletion": true,
 								"parameters": {
 									"VideoId": {
-										"value": "@item().videoId",
+										"value": "@item().VideoId",
 										"type": "Expression"
 									}
 								}
